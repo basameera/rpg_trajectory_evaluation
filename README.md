@@ -39,7 +39,7 @@ Zichao Zhang, Davide Scaramuzza: A Tutorial on Quantitative Trajectory Evaluatio
 5. [Customization: `Trajectory` class](#customization)
 6. [Credits](#credits)
 
-## Install
+## 1. Install
 The package is written in python and tested in Ubuntu 16.04 and 18.04.
 Currently only `python2` is supported.
 The package can be used as a ROS package as well as a standalone tool.
@@ -52,7 +52,7 @@ It only depends on [`catkin_simple`](https://github.com/catkin/catkin_simple) to
 * `colorama` for colored console output
 * `ruamel.yaml` ([install](https://pypi.org/project/ruamel.yaml/)) for [preserving the order in yaml configurations](https://stackoverflow.com/questions/5121931/in-python-how-can-you-load-yaml-mappings-as-ordereddicts)
 
-## Prepare the Data
+## 2. Prepare the Data
 Each trajectory estimate (e.g., output of a visual-inertial odometry algorithm) to evaluate is organized as a self-contained folder.
 Each folder needs to contain at least two text files specifying the groundtruth and estimated poses with timestamps.
 
@@ -66,7 +66,7 @@ For analyzing results from `N` runs, the estimated poses should have suffixes `0
 You can see the folders under `results` for examples.
 These files contains **all the essential information** to reproduce quantitative trajectory evaluation results with the toolbox.
 
-#### Poses
+#### 2.1 Poses
 The groundtruth (`stamped_groundtruth.txt`) and estimated poses (`stamped_traj_estimate.txt`) are specified in the following format
 
 ```
@@ -81,7 +81,7 @@ The timestamps are in the unit of second and used to establish temporal correspo
 There are some scripts under `scripts/dataset_tools` to help you convert your data format (EuRoC style, ROS bag) to the above format.
 See the corresponding section below for details.
 
-#### Evaluation parameters
+#### 2.2 Evaluation parameters
 Currently `eval_cfg.yaml` specifies two parameters for trajectory alignment (used in absolute errors):
 * `align_type`:
   * `sim3`: a similarity transformation (for vision-only monocular case)
@@ -92,7 +92,7 @@ Currently `eval_cfg.yaml` specifies two parameters for trajectory alignment (use
 
 **If this file does not exist, trajectory alignment will be done using `sim3` and all the poses.**
 
-#### Start and end times
+#### 2.3 Start and end times
 
 `start_end_time.yaml` can specify the following (according to groundtruth time):
 * `start_time_sec`: only poses after this time will be used for analysis
@@ -101,10 +101,10 @@ Currently `eval_cfg.yaml` specifies two parameters for trajectory alignment (use
 **If this file does not exist, analysis be done for all the poses in `stamped_traj_estimate.txt`.**
 
 
-## Run the Evaluation
+## 3. Run the Evaluation
 We can run the evaluation on a single estimate result or for multiple algorithms and datasets.
 
-### Single trajectory estimate
+### 3.1 Single trajectory estimate
 
 As a ROS package, run
 
@@ -120,7 +120,7 @@ python2 analyze_trajectory_single.py <result_folder>
 
 `<result_folder>` should contain the groundtruth, trajectory estimate and optionally the evaluation configuration as mentioned above.
 
-#### Output
+#### 3.1.1 Output
 After the evaluation is done, you will find two folders under `<result_folder>`:
 * `saved_results/traj_est`: text files that contains the statistics of different errors
   * `absolute_err_statistics_<align_type>_<align_frames>.yaml`: the statistics of the absolute error using the specified alignment.
@@ -153,7 +153,7 @@ Sometimes, a SLAM algorithm outputs different types of trajectories, such as rea
 
 The mapping from the `est_type` to file names (i.e., `stamped_*.txt`) is defined in `scripts/fn_constants.py`. This is also used for analyzing multiple trajectories. You can find an example in `results/euroc_vislam_mono` for comparing real-time poses and bundle adjustment estimates.
 
-### Multiple trajectory estimates
+### 3.2 Multiple trajectory estimates
 
 Similar to the case of single trajectory evaluation, for ROS, run
 
@@ -286,20 +286,20 @@ Misc:
 * `--dpi`: allow saving at a higher dpi. Default: 300
 * `--no_sort_names`: do not sort the names of datasets and algorithms (using the order in the configuration file) when plotting/writing the results. Default: names will be sorted.
 
-## Utilities
+## 4. Utilities
 
-### Dataset tools
+### 4.1 Dataset tools
 Under `scripts/dataset_tools`, we provide several scripts to prepare your dataset for analysis. Specifically:
 * `asl_groundtruth_to_pose.py`: convert EuRoC style format to the format used in this toolbox.
 * `bag_to_pose.py`: extract `PoseStamped`/`PoseWithCovarianceStamped` in a ROS bag to the desired format.
 * `transform_trajectory.py`: transformed a pose file of our format by a given transformation, useful for applying hand-eye calibration to groundtruth/estimate before analysis.
 
-### Misc scripts
+### 4.2 Misc scripts
 Under `scripts`, there are also some scripts for conveniece:
 * `recursive_clean_results_dir.py`: remove all `saved_results` directories recursively.
 * `change_eval_cfg_recursive.py`: recursively changing the evaluation parameter within a given result folder.
 
-## Customization
+## 5. Customization
 Most of the error computing is done via the class `Trajectory` (`src/rpg_trajectory_evaluation/trajectory.py`).
 If you would like to customize your evaluation, you can use this class directly.
 The API of this class is quite simple
@@ -339,7 +339,7 @@ See `Trajectory.compute_relative_error_at_subtraj_len` function for details.
 
 With the interface, it should be easy to access all the computed errors for customized analysis.
 
-## Credits
+## 6. Credits
 See `package.yaml` for the list of authors that have contributed to this toolbox.
 
 It might happen that some open-source code is incorporated into the toolbox but we missed the license/copyright information.
