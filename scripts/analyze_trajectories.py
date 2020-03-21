@@ -186,7 +186,7 @@ def plot_trajectories(dataset_trajectories_list, dataset_names, algorithm_names,
 
         print("Plotting {0}...".format(dataset_nm))
 
-        # plot trajectory
+        # plot trajectory top
         fig = plt.figure(figsize=(6, 5.5))
         ax = fig.add_subplot(111, aspect='equal',
                              xlabel='x [m]', ylabel='y [m]')
@@ -301,7 +301,7 @@ def plot_overall_odometry_errors(odo_err_col, algorithm_names, rel_e_distances,
         for alg in algorithm_names:
             errors.append([cur_err[alg][d] for d in distances])
 
-        fig = plt.figure(figsize=(12, 3))
+        fig = plt.figure(figsize=(6, 3))
         ax = fig.add_subplot(
             111, xlabel='Distance traveled [m]', ylabel=ylabel)
         pu.boxplot_compare(ax, distances, errors,
